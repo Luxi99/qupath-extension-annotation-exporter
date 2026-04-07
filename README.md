@@ -68,9 +68,9 @@ During development, your probably want to run QuPath easily with your extension 
 ### 0. Make sure you have Java installed
 You'll need to install Java first.
 
-At the time of writing, we use a Java 21 JDK downloaded from https://adoptium.net/
+At the time of writing, we use a Java 25 JDK downloaded from https://adoptium.net/
 
-> Java 21 is a 'Long Term Support' release - which is why we use it instead of the very latest version.
+> Java 25 is a 'Long Term Support' release - which is why we use it instead of the very latest version.
 
 ### 1. Get QuPath's source code
 You can find instructions at https://qupath.readthedocs.io/en/stable/docs/reference/building.html
