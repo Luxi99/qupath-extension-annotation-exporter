@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.VBox;
-import qupath.ext.template.DemoExtension;
+import qupath.ext.template.AnnotationExporterExtension;
 import qupath.fx.dialogs.Dialogs;
 
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class InterfaceController extends VBox {
         // it may be better to present them all to the user in the main extension GUI,
         // binding them to GUI elements, so they are updated when the user interacts with
         // the GUI, and so that the GUI elements are updated if the preference changes
-        integerOptionSpinner.getValueFactory().valueProperty().bindBidirectional(DemoExtension.integerOptionProperty());
+        integerOptionSpinner.getValueFactory().valueProperty().bindBidirectional(AnnotationExporterExtension.integerOptionProperty());
         integerOptionSpinner.getValueFactory().valueProperty().addListener((observableValue, oldValue, newValue) -> {
             Dialogs.showInfoNotification(
                     resources.getString("title"),

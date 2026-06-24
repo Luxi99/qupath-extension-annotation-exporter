@@ -9,10 +9,10 @@ plugins {
 
 // TODO: Configure your extension here (please change the defaults!)
 qupathExtension {
-    name = "qupath-extension-template"
+    name = "qupath-extension-annotation-exporter"
     group = "io.github.qupath"
     version = "0.1.0-SNAPSHOT"
-    description = "A simple QuPath extension"
+    description = "This extension allows you to export manual annotations from images of the current project."
     automaticModule = "io.github.qupath.extension.template"
 }
 
@@ -30,5 +30,5 @@ dependencies {
     // For testing
     testImplementation(libs.bundles.qupath)
     testImplementation(libs.junit)
-
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
