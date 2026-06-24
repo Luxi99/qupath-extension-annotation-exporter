@@ -32,33 +32,30 @@ import java.util.ResourceBundle;
  *     /resources/META-INF/services/qupath.lib.gui.extensions.QuPathExtension
  * </pre>
  */
-public class DemoExtension implements QuPathExtension {
+public class AnnotationExporterExtension implements QuPathExtension {
 	// TODO: add and modify strings to this resource bundle as needed
 	/**
 	 * A resource bundle containing all the text used by the extension. This may be useful for translation to other languages.
 	 * Note that this is optional and you can define the text within the code and FXML files that you use.
 	 */
 	private static final ResourceBundle resources = ResourceBundle.getBundle("qupath.ext.template.ui.strings");
-	private static final Logger logger = LoggerFactory.getLogger(DemoExtension.class);
+	private static final Logger logger = LoggerFactory.getLogger(AnnotationExporterExtension.class);
 
 	/**
 	 * Display name for your extension
-	 * TODO: define this
 	 */
 	private static final String EXTENSION_NAME = resources.getString("name");
 
 	/**
 	 * Short description, used under 'Extensions > Installed extensions'
-	 * TODO: define this
 	 */
 	private static final String EXTENSION_DESCRIPTION = resources.getString("description");
 
 	/**
 	 * QuPath version that the extension is designed to work with.
 	 * This allows QuPath to inform the user if it seems to be incompatible.
-	 * TODO: define this
 	 */
-	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.5.0");
+	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.7.0");
 
 	/**
 	 * Flag whether the extension is already installed (might not be needed... but we'll do it anyway)
