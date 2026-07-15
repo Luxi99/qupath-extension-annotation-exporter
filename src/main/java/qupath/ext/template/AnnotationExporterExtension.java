@@ -1,22 +1,19 @@
 package qupath.ext.template;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
-import javafx.scene.Scene;
-import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.control.action.ActionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import qupath.ext.template.ui.InterfaceController;
-import qupath.fx.dialogs.Dialogs;
-import qupath.fx.prefs.controlsfx.PropertyItemBuilder;
 import qupath.lib.common.Version;
 import qupath.lib.gui.QuPathGUI;
 import qupath.lib.gui.extensions.QuPathExtension;
 import qupath.lib.gui.prefs.PathPrefs;
 
-import java.io.IOException;
 import java.util.ResourceBundle;
 
 
@@ -32,33 +29,30 @@ import java.util.ResourceBundle;
  *     /resources/META-INF/services/qupath.lib.gui.extensions.QuPathExtension
  * </pre>
  */
-public class DemoExtension implements QuPathExtension {
+public class AnnotationExporterExtension implements QuPathExtension {
 	// TODO: add and modify strings to this resource bundle as needed
 	/**
 	 * A resource bundle containing all the text used by the extension. This may be useful for translation to other languages.
 	 * Note that this is optional and you can define the text within the code and FXML files that you use.
 	 */
 	private static final ResourceBundle resources = ResourceBundle.getBundle("qupath.ext.template.ui.strings");
-	private static final Logger logger = LoggerFactory.getLogger(DemoExtension.class);
+	private static final Logger logger = LoggerFactory.getLogger(AnnotationExporterExtension.class);
 
 	/**
 	 * Display name for your extension
-	 * TODO: define this
 	 */
 	private static final String EXTENSION_NAME = resources.getString("name");
 
 	/**
 	 * Short description, used under 'Extensions > Installed extensions'
-	 * TODO: define this
 	 */
 	private static final String EXTENSION_DESCRIPTION = resources.getString("description");
 
 	/**
 	 * QuPath version that the extension is designed to work with.
 	 * This allows QuPath to inform the user if it seems to be incompatible.
-	 * TODO: define this
 	 */
-	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.5.0");
+	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.7.0");
 
 	/**
 	 * Flag whether the extension is already installed (might not be needed... but we'll do it anyway)
@@ -95,67 +89,18 @@ public class DemoExtension implements QuPathExtension {
 	private Stage stage;
 
 	@Override
-	public void installExtension(QuPathGUI qupath) {
+	public void installExtension(@NotNull QuPathGUI qupath) {
 		if (isInstalled) {
 			logger.debug("{} is already installed", getName());
 			return;
 		}
+
 		isInstalled = true;
-		addPreferenceToPane(qupath);
-		addMenuItem(qupath);
-	}
-
-	/**
-	 * Demo showing how to add a persistent preference to the QuPath preferences pane.
-	 * The preference will be in a section of the preference pane based on the
-	 * category you set. The description is used as a tooltip.
-	 * @param qupath The currently running QuPathGUI instance.
-	 */
-	private void addPreferenceToPane(QuPathGUI qupath) {
-        var propertyItem = new PropertyItemBuilder<>(enableExtensionProperty, Boolean.class)
-				.name(resources.getString("menu.enable"))
-				.category("Demo extension")
-				.description("Enable the demo extension")
-				.build();
-		qupath.getPreferencePane()
-				.getPropertySheet()
-				.getItems()
-				.add(propertyItem);
-	}
-
-
-	/**
-	 * Demo showing how a new command can be added to a QuPath menu.
-	 * @param qupath The QuPath GUI
-	 */
-	private void addMenuItem(QuPathGUI qupath) {
-		var menu = qupath.getMenu("Extensions>" + EXTENSION_NAME, true);
-		MenuItem menuItem = new MenuItem("My menu item");
-		menuItem.setOnAction(e -> createStage());
-		menuItem.disableProperty().bind(enableExtensionProperty.not());
+		var action = new Action("Export Annotation Masks...", e -> new ExportCommand(qupath).run());
+		var menuItem = ActionUtils.createMenuItem(action);
+		var menu = qupath.getMenu("Extensions>Annotation Exporter", true);
 		menu.getItems().add(menuItem);
 	}
-
-	/**
-	 * Demo showing how to create a new stage with a JavaFX FXML interface.
-	 */
-	private void createStage() {
-		if (stage == null) {
-			try {
-				stage = new Stage();
-				Scene scene = new Scene(InterfaceController.createInstance());
-				stage.initOwner(QuPathGUI.getInstance().getStage());
-				stage.setTitle(resources.getString("stage.title"));
-				stage.setScene(scene);
-				stage.setResizable(false);
-			} catch (IOException e) {
-				Dialogs.showErrorMessage(resources.getString("error"), resources.getString("error.gui-loading-failed"));
-				logger.error("Unable to load extension interface FXML", e);
-			}
-		}
-		stage.show();
-	}
-
 
 	@Override
 	public String getName() {

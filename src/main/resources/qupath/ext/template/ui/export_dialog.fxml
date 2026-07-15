@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="qupath.ext.template.ui.ExportDialogController"
+          hgap="10" vgap="12">
+    <padding>
+        <Insets top="20" right="20" bottom="10" left="10"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints minWidth="180"/>
+        <ColumnConstraints minWidth="180"/>
+    </columnConstraints>
+
+    <CheckBox fx:id="separateNucleiCheck"
+              text="Separa nuclei dal citoplasma"
+              selected="true"
+              GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2">
+        <tooltip>
+            <Tooltip text="Se attivo, i nuclei avranno una label separata dalla cellula genitrice.&#10;Se disattivo, l'area del nucleo viene inclusa nell'area della cellula."/>
+        </tooltip>
+    </CheckBox>
+
+    <Separator GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+    <CheckBox fx:id="enableFilterCheck"
+              text="Filtra per classe"
+              selected="false"
+              GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+    <RadioButton fx:id="ignoreRadio"
+                 text="Ignora le classi elencate"
+                 selected="true"
+                 disable="true"
+                 GridPane.rowIndex="3" GridPane.columnIndex="0">
+        <toggleGroup>
+            <ToggleGroup fx:id="filterMode"/>
+        </toggleGroup>
+    </RadioButton>
+
+    <RadioButton fx:id="includeRadio"
+                 text="Tieni solo le classi elencate"
+                 disable="true"
+                 toggleGroup="$filterMode"
+                 GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label fx:id="classNamesLabel"
+           text="Classi (separate da virgola):"
+           disable="true"
+           GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+    <TextField fx:id="classNamesField"
+               promptText="es. fondo, artefatto, nucleo"
+               disable="true"
+               GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.columnSpan="2">
+        <tooltip>
+            <Tooltip text="Nomi delle classi separati da virgola (case-insensitive)"/>
+        </tooltip>
+    </TextField>
+
+</GridPane>
