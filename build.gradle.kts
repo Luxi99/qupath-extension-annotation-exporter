@@ -31,4 +31,11 @@ dependencies {
     testImplementation(libs.bundles.qupath)
     testImplementation(libs.junit)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    testImplementation("org.openjfx:javafx-base:21:linux")
+    testImplementation("org.openjfx:javafx-graphics:21:linux")
+    testImplementation("org.openjfx:javafx-controls:21:linux")
+    testImplementation("org.openjfx:javafx-fxml:21:linux")
+    testImplementation("org.openjfx:javafx-swing:21:linux")
+    testImplementation("org.hamcrest:hamcrest:2.2")
 }
