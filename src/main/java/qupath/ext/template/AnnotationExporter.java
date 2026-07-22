@@ -82,23 +82,25 @@ public class AnnotationExporter {
         List<PathObject> annotations = new ArrayList<>(hierarchy.getAnnotationObjects());
 
         // Applica il filtro per classe
-        if (!config.classNames().isEmpty()) {
-            if (config.ignoreClasses()) {
-                annotations.removeIf(a -> config.classNames().contains(
-                        a.getPathClass() != null ? a.getPathClass().getName().toLowerCase() : ""
-                ));
-            } else {
-                annotations.removeIf(a -> !config.classNames().contains(
-                        a.getPathClass() != null ? a.getPathClass().getName().toLowerCase() : ""
-                ));
-            }
-        }
+        filter(config, annotations);
         return annotations;
     }
 
-    // -------------------------------------------------------------------------
-    // Metodi di utility — traduzione diretta del tuo script Groovy
-    // -------------------------------------------------------------------------
+    private static void filter(ExportDialog.ExportConfig config, List<PathObject> annotations) {
+        switch (config.filterMode()) {
+            case NONE -> {}
+            case EXCLUDE -> annotations.removeIf(a ->
+                    config.classNames().contains(
+                            a.getPathClass() != null ? a.getPathClass().getName().toLowerCase() : ""
+                    )
+            );
+            case INCLUDE -> annotations.removeIf(a ->
+                    !config.classNames().contains(
+                            a.getPathClass() != null ? a.getPathClass().getName().toLowerCase() : ""
+                    )
+            );
+        }
+    }
 
     static @NotNull List<PathObject> sortAnnotations(@NotNull List<PathObject> annotations) {
         return annotations.stream()

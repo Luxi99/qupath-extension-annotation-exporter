@@ -21,7 +21,7 @@ public class ExportDialog {
      */
     public record ExportConfig(
             boolean separateNuclei,
-            boolean ignoreClasses,
+            FilterMode filterMode,
             List<String> classNames
     ) {}
 

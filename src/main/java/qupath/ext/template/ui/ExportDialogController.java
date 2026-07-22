@@ -39,9 +39,13 @@ public class ExportDialogController {
      * Costruisce la configurazione a partire dallo stato corrente dei controlli.
      */
     public ExportDialog.ExportConfig getConfig() {
+        FilterMode mode;
         List<String> classes = List.of();
 
-        if (enableFilterCheck.isSelected() && !classNamesField.getText().isBlank()) {
+        if (!enableFilterCheck.isSelected()) {
+            mode = FilterMode.NONE;
+        } else {
+            mode = ignoreRadio.isSelected() ? FilterMode.EXCLUDE : FilterMode.INCLUDE;
             classes = Arrays.stream(classNamesField.getText().split(","))
                     .map(String::trim)
                     .map(String::toLowerCase)
@@ -51,7 +55,7 @@ public class ExportDialogController {
 
         return new ExportDialog.ExportConfig(
                 separateNucleiCheck.isSelected(),
-                ignoreRadio.isSelected(),
+                mode,
                 classes
         );
     }
