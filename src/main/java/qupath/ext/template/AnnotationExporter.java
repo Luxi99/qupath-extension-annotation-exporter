@@ -78,6 +78,12 @@ public class AnnotationExporter {
         return true;
     }
 
+    /**
+     * Gathers annotations in an image and filters them according to the configuration provided
+     * @param config the configuration to use for filtering
+     * @param hierarchy the hierarchy to use for gathering annotations
+     * @return a list of annotations that match the configuration
+     */
     private static @NotNull List<PathObject> getAnnotations(@NotNull ExportDialog.ExportConfig config, @NotNull PathObjectHierarchy hierarchy) {
         List<PathObject> annotations = new ArrayList<>(hierarchy.getAnnotationObjects());
 
