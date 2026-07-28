@@ -18,16 +18,7 @@ import java.util.ResourceBundle;
 
 
 /**
- * This is a demo to provide a template for creating a new QuPath extension.
- * <p>
- * It doesn't do much - it just shows how to add a menu item and a preference.
- * See the code and comments below for more info.
- * <p>
- * <b>Important!</b> For your extension to work in QuPath, you need to make sure the name &amp; package
- * of this class is consistent with the file
- * <pre>
- *     /resources/META-INF/services/qupath.lib.gui.extensions.QuPathExtension
- * </pre>
+ * Main class for the extension. This class is instantiated by QuPath when the extension is loaded.
  */
 public class AnnotationExporterExtension implements QuPathExtension {
 	// TODO: add and modify strings to this resource bundle as needed
@@ -39,7 +30,7 @@ public class AnnotationExporterExtension implements QuPathExtension {
 	private static final Logger logger = LoggerFactory.getLogger(AnnotationExporterExtension.class);
 
 	/**
-	 * Display name for your extension
+	 * Display name for the extension
 	 */
 	private static final String EXTENSION_NAME = resources.getString("name");
 
@@ -50,44 +41,24 @@ public class AnnotationExporterExtension implements QuPathExtension {
 
 	/**
 	 * QuPath version that the extension is designed to work with.
-	 * This allows QuPath to inform the user if it seems to be incompatible.
+	 * This allows QuPath to inform the user if it seems incompatible.
 	 */
 	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.7.0");
 
 	/**
-	 * Flag whether the extension is already installed (might not be needed... but we'll do it anyway)
+	 * Flag whether the extension is already installed
 	 */
 	private boolean isInstalled = false;
-
-	/**
-	 * A 'persistent preference' - showing how to create a property that is stored whenever QuPath is closed.
-	 * This preference will be managed in the main QuPath GUI preferences window.
-	 */
-	private static final BooleanProperty enableExtensionProperty = PathPrefs.createPersistentPreference(
-			"enableExtension", true);
-
-	/**
-	 * Another 'persistent preference'.
-	 * This one will be managed using a GUI element created by the extension.
-	 * We use {@link Property<Integer>} rather than {@link IntegerProperty}
-	 * because of the type of GUI element we use to manage it.
-	 */
-	private static final Property<Integer> integerOption = PathPrefs.createPersistentPreference(
-			"demo.num.option", 1).asObject();
-
-	/**
-	 * An example of how to expose persistent preferences to other classes in your extension.
-	 * @return The persistent preference, so that it can be read or set somewhere else.
-	 */
-	public static Property<Integer> integerOptionProperty() {
-		return integerOption;
-	}
 
 	/**
 	 * Create a stage for the extension to display
 	 */
 	private Stage stage;
 
+	/**
+	 * Install the extension. This is called by QuPath when the extension is loaded.
+	 * @param qupath the {@code QuPathGUI} instance
+	 */
 	@Override
 	public void installExtension(@NotNull QuPathGUI qupath) {
 		if (isInstalled) {
@@ -102,16 +73,28 @@ public class AnnotationExporterExtension implements QuPathExtension {
 		menu.getItems().add(menuItem);
 	}
 
+	/**
+	 * Get the name of the extension.
+	 * @return the name of the extension
+	 */
 	@Override
 	public String getName() {
 		return EXTENSION_NAME;
 	}
 
+	/**
+	 * Get the description of the extension.
+	 * @return the description of the extension
+	 */
 	@Override
 	public String getDescription() {
 		return EXTENSION_DESCRIPTION;
 	}
-	
+
+	/**
+	 * Get the version of QuPath that the extension is designed to work with.
+	 * @return the version of QuPath that the extension is designed to work with
+	 */
 	@Override
 	public Version getQuPathVersion() {
 		return EXTENSION_QUPATH_VERSION;

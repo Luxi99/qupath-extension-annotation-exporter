@@ -1,5 +1,6 @@
 package qupath.ext.template;
 
+import annotationexporter.core.FilterMode;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

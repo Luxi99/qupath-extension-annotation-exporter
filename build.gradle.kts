@@ -26,6 +26,8 @@ repositories {
 // TODO: Define your dependencies here
 dependencies {
 
+    shadow("com.github.Luxi99:annotation-exporter-core:0.1.1")
+
     // Main dependencies for most QuPath extensions
     shadow(libs.bundles.qupath)
     shadow(libs.bundles.logging)
@@ -33,8 +35,6 @@ dependencies {
 
     // If you aren't using Groovy, this can be removed
     shadow(libs.bundles.groovy)
-
-    implementation("com.github.Luxi99:annotation-exporter-core:0.1.1")
 
     // For testing
     testImplementation(libs.bundles.qupath)

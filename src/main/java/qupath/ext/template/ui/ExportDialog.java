@@ -14,11 +14,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Utility class to show the export dialog.
+ */
 public class ExportDialog {
     private static final Logger logger = LoggerFactory.getLogger(ExportDialog.class);
 
     /**
-     * Parametri di configurazione raccolti dal dialog.
+     * Support record with configurations for the export.
      */
     public record ExportConfig(
             boolean separateNuclei,
@@ -27,8 +30,10 @@ public class ExportDialog {
     ) {}
 
     /**
-     * Carica il dialog da FXML, lo mostra e restituisce la configurazione scelta,
-     * o empty() se l'utente ha annullato.
+     * Loads the dialog window, shows it, and returns the configuration chosen by the user
+     * or empty if the user canceled the operation.
+     * @param qupath the {@code QuPathGUI} instance
+     * @return the configuration chosen by the user, as an {@code Optional<ExportConfig>}
      */
     public static Optional<ExportConfig> show(@NotNull QuPathGUI qupath) {
         try {
@@ -40,11 +45,11 @@ public class ExportDialog {
 
             Dialog<ExportConfig> dialog = new Dialog<>();
             dialog.setTitle("Export Annotation Masks");
-            dialog.setHeaderText("Configura l'esportazione delle annotazioni");
+            dialog.setHeaderText("Configure annotation mask export options");
             dialog.initOwner(qupath.getStage());
             dialog.getDialogPane().setContent(root);
 
-            ButtonType exportBtn = new ButtonType("Esporta", ButtonType.OK.getButtonData());
+            ButtonType exportBtn = new ButtonType("Export", ButtonType.OK.getButtonData());
             dialog.getDialogPane().getButtonTypes().addAll(exportBtn, ButtonType.CANCEL);
 
             dialog.setResultConverter(btn ->

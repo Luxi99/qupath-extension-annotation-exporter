@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+/**
+ * Command to export annotations. Contains the main logic for the export.
+ */
 public class ExportCommand implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(ExportCommand.class);
     private final QuPathGUI qupath;
@@ -29,23 +32,23 @@ public class ExportCommand implements Runnable {
         this.qupath = qupath;
     }
 
+    /**
+     * Checks if a project is open, shows the export dialog, then runs the export in a background thread.
+     */
     @Override
     public void run() {
-        // 1. Verifica che ci sia un progetto aperto
         Project<?> project = qupath.getProject();
         if (project == null) {
             Dialogs.showErrorMessage(
-                    "Nessun progetto aperto",
-                    "Apri un progetto QuPath prima di eseguire l'esportazione."
+                    "No project open",
+                    "Open a QuPath project before running the export."
             );
             return;
         }
 
-        // 2. Mostra il dialog di configurazione
         Optional<ExportDialog.ExportConfig> configOpt = ExportDialog.show(qupath);
         if (configOpt.isEmpty()) return; // utente ha annullato
 
-        // 3. Esegui in background per non bloccare la UI
         var config = configOpt.get();
 
         Task<Void> task = new Task<>() {
@@ -58,6 +61,11 @@ public class ExportCommand implements Runnable {
 
         qupath.getThreadPoolManager().getSingleThreadExecutor(this).submit(task);    }
 
+    /**
+     * Runs the actual export for each image in the project.
+     * @param project the project to export annotations from
+     * @param config configuration for the export
+     */
     private void runExport(@NotNull Project<?> project, @NotNull ExportDialog.ExportConfig config) {
         var entries = project.getImageList();
         int total = entries.size();
@@ -82,15 +90,23 @@ public class ExportCommand implements Runnable {
         // Torna sul thread JavaFX per mostrare il messaggio finale
         javafx.application.Platform.runLater(() ->
                 Dialogs.showInfoNotification(
-                        "Esportazione completata",
-                        String.format("Esportate: %d immagini\nSaltate (nessuna annotazione): %d",
+                        "Export completed",
+                        String.format("Exported: %d images\nSkipped (no annotations): %d",
                                 finalExported, finalSkipped)
                 )
         );
 
-        logger.info("[END] Esportate: {}, saltate: {}", finalExported, finalSkipped);
+        logger.info("[END] Exported: {}, Skipped: {}", finalExported, finalSkipped);
     }
 
+    /**
+     * Exports annotations from a single image.
+     * @param entry the image to export annotations from
+     * @param config configuration for the export
+     * @param project the project to export annotations from
+     * @return true if annotations were exported, false otherwise
+     * @throws IOException if an error occurs while reading the image data
+     */
     private boolean exportEntry(@NotNull ProjectImageEntry<?> entry, @NotNull ExportDialog.ExportConfig config, @NotNull Project<?> project) throws IOException {
         ImageData<?> imageData = entry.readImageData();
         PathObjectHierarchy hierarchy = imageData.getHierarchy();
