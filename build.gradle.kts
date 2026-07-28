@@ -16,6 +16,13 @@ qupathExtension {
     automaticModule = "io.github.qupath.extension.template"
 }
 
+repositories {
+    // repository già esistenti (scijava, mavenCentral, ecc.)
+    mavenCentral()
+    maven { url = uri("https://maven.scijava.org/content/repositories/releases") }
+    maven { url = uri("https://jitpack.io") }
+}
+
 // TODO: Define your dependencies here
 dependencies {
 
@@ -26,6 +33,8 @@ dependencies {
 
     // If you aren't using Groovy, this can be removed
     shadow(libs.bundles.groovy)
+
+    implementation("com.github.Luxi99:annotation-exporter-core:0.1.1")
 
     // For testing
     testImplementation(libs.bundles.qupath)

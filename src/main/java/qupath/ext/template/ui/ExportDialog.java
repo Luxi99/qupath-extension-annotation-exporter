@@ -1,5 +1,6 @@
 package qupath.ext.template.ui;
 
+import annotationexporter.core.FilterMode;
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

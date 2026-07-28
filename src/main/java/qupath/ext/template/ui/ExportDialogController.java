@@ -1,5 +1,6 @@
 package qupath.ext.template.ui;
 
+import annotationexporter.core.FilterMode;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;

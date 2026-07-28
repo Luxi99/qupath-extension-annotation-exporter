@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import qupath.ext.template.ui.ExportDialogController;
-import qupath.ext.template.ui.FilterMode;
 
 import java.util.concurrent.CountDownLatch;
 
