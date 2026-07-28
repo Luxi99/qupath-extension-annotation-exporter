@@ -1,5 +1,6 @@
 package qupath.ext.template;
 
+import annotationexporter.core.FilterMode;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -75,7 +76,7 @@ class ExportDialogControllerTest {
     void ignoreRadioSelectedByDefaultSetsIgnoreClassesTrue() {
         var config = controller.getConfig();
 
-        assertThat(config.ignoreClasses(), is(true));
+        assertThat(config.filterMode(), is(FilterMode.NONE));
     }
 
     // --- Helpers per accedere ai campi privati @FXML tramite reflection ---

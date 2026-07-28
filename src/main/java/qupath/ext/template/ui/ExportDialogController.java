@@ -1,5 +1,7 @@
 package qupath.ext.template.ui;
 
+import annotationexporter.core.FilterMode;
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -10,6 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for the export dialog.
+ */
 public class ExportDialogController {
     @FXML
     private CheckBox separateNucleiCheck;
@@ -24,9 +29,11 @@ public class ExportDialogController {
     @FXML
     private TextField classNamesField;
 
+    /**
+     * Initializes the controls to their default values.
+     */
     @FXML
     private void initialize() {
-        // Abilita/disabilita i controlli di filtro in base alla checkbox
         enableFilterCheck.selectedProperty().addListener((obs, old, enabled) -> {
             ignoreRadio.setDisable(!enabled);
             includeRadio.setDisable(!enabled);
@@ -36,12 +43,17 @@ public class ExportDialogController {
     }
 
     /**
-     * Costruisce la configurazione a partire dallo stato corrente dei controlli.
+     * Creates a new {@code ExportConfig} based on the current state of the controls.
+     * @return the {@code ExportConfig} that was created
      */
-    public ExportDialog.ExportConfig getConfig() {
+    public @NotNull ExportDialog.ExportConfig getConfig() {
+        FilterMode mode;
         List<String> classes = List.of();
 
-        if (enableFilterCheck.isSelected() && !classNamesField.getText().isBlank()) {
+        if (!enableFilterCheck.isSelected()) {
+            mode = FilterMode.NONE;
+        } else {
+            mode = ignoreRadio.isSelected() ? FilterMode.EXCLUDE : FilterMode.INCLUDE;
             classes = Arrays.stream(classNamesField.getText().split(","))
                     .map(String::trim)
                     .map(String::toLowerCase)
@@ -51,7 +63,7 @@ public class ExportDialogController {
 
         return new ExportDialog.ExportConfig(
                 separateNucleiCheck.isSelected(),
-                ignoreRadio.isSelected(),
+                mode,
                 classes
         );
     }
