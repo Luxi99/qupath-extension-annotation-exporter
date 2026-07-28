@@ -11,7 +11,7 @@ plugins {
 qupathExtension {
     name = "qupath-extension-annotation-exporter"
     group = "io.github.qupath"
-    version = "0.1.0-SNAPSHOT"
+    version = "0.1.1"
     description = "This extension allows you to export manual annotations from images of the current project."
     automaticModule = "io.github.qupath.extension.template"
 }
