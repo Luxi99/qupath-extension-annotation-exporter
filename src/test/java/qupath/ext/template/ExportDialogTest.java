@@ -3,6 +3,7 @@ package qupath.ext.template;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import qupath.ext.template.ui.ExportDialog;
 import qupath.ext.template.ui.ExportDialogController;
@@ -10,6 +11,7 @@ import qupath.ext.template.ui.ExportDialogController;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+@Tag("requires-javafx")
 class ExportDialogTest {
 
     @BeforeAll

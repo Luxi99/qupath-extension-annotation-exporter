@@ -23,6 +23,14 @@ repositories {
     maven { url = uri("https://jitpack.io") }
 }
 
+tasks.test {
+    useJUnitPlatform {
+        if (System.getenv("CI") != null) {
+            excludeTags("requires-javafx")
+        }
+    }
+}
+
 // TODO: Define your dependencies here
 dependencies {
 
