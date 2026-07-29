@@ -31,6 +31,12 @@ tasks.test {
     }
 }
 
+tasks.register("printVersion") {
+    doLast {
+        println(qupathExtension.version.get())
+    }
+}
+
 // TODO: Define your dependencies here
 dependencies {
 
