@@ -1,205 +1,124 @@
-# QuPath extension template
+# Annotation Exporter
 
-This repo contains a template and instructions to help create a new extension for [QuPath](https://qupath.github.io).
+This QuPath extension aims to provide a simple and efficient way to extract cell annotaions
+from [QuPath](https://qupath.github.io) to use for model training and running stats.
 
-It already contains two minimal extensions - one using Java, one using Groovy - so the first task is to make sure that they work.
-Then, it's a matter of customizing the code to make it more useful.
-
-> **Update!** 
-> For QuPath v0.6.0 this repo switched to use Kotlin DSL for Gradle build files - 
-> and also to use the [QuPath Gradle Plugin](https://github.com/qupath/qupath-gradle-plugin).
-> 
-> The outcome is that the build files are _much_ simpler.
-
+## Download the extension
+To download the extension you just need to navigate to the [Releases](https://github.com/Luxi99/qupath-extension-annotation-exporter/releases)
+section of this repository choose the version you'd like to download (the latest is always recommended)
+and download the `.jar` file.
 
 ## Build the extension
 
-Building the extension with Gradle should be pretty easy - you don't even need to install Gradle separately, because the 
+If instead of downloading a precompiled `.jar`, you want to build the extension yourself you should follow the next steps.
+
+Building the extension with Gradle should be pretty easy - you don't even need to install Gradle separately, because the
 [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) will take care of that.
 
-Open a command prompt, navigate to where the code lives, and use
+Since this extension depends on external libraries beyond what QuPath already includes such as [export-annotations-core](https://github.com/Luxi99/annotation-exporter-core),
+the source code is compiled into a "fat" `.jar` contatining all said libraries. 
+To replicate that use:
 ```bash
-gradlew build
+./gradlew shadowJar
 ```
+
+If instead you decide to build the extension without external dependencies use:
+```bash
+./gradlew build
+```
+
+However, if you do that, you'll need to drag *all* the extra dependences onto QuPath to install them as well. 
+Otherwise, the extension *will not* work properly.
 
 The built extension should be found inside `build/libs`.
-You can drag this onto QuPath to install it.
-You'll be prompted to create a user directory if you don't already have one.
 
-The minimal extension here doesn't do much, but it should at least install a new command under the 'Extensions' menu in 
-QuPath.
+## Install the extension
+To install the extension, you simply need to drag its `.jar` onto QuPath to install it, like this:
 
-> In case your extension contains external dependencies beyond what QuPath already includes, you can create a 
-> [single jar file](https://imperceptiblethoughts.com/shadow/introduction/#benefits-of-shadow) that bundles these along 
-> with your extension by using
-> ```bash
-> gradlew shadowJar
-> ```
-> If you don't do that, you'll need to drag *all* the extra dependences onto QuPath to install them as well.
+<p align="center">
+  <img src="assets/demo.gif" alt="Demo" width="60%">
+</p>
 
+At the time of writing, the QuPath version that this extension is intended for is 0.7.0 and developed in Java 25.  
+For more information about installing extensions, follow [this](https://qupath.readthedocs.io/en/0.7/docs/intro/extensions.html#installing-extensions-manually) link.  
+For more information on how QuPath extensions work, follow [this](https://github.com/qupath/qupath-extension-template) one instead.
 
-## Configure the extension
+## Usage
+> The extension is found under the Extensions menu in QuPath.
 
-Edit `settings.gradle.kts` to specify which version of QuPath your extension should be compatible with, e.g.
+> All results of the export are saved in the `exports` folder inside the project folder.
 
-```kotlin
-qupath {
-    version = "0.6.0"
-}
-```
+In the following paragraphs we'll go through different scenarios on how to use the extension and
+what the generated images should look like. The TSV tables are quite self-explanatory 
+(just take a look at one, and you'll see what I mean).
 
-Edit `build.gradle.kts` to specify the details of your extension
+### Default configuration
+The first time you run the extension, a dialog window will pop up and should look something like this:
+<p align="center">
+  <img src="assets/default_config.png" alt="Demo" width="30%">
+</p>
 
-```kotlin
-qupathExtension {
-  name = "qupath-extension-template"
-  group = "io.github.qupath"
-  version = "0.1.0-SNAPSHOT"
-  description = "A simple QuPath extension"
-  automaticModule = "io.github.qupath.extension.template"
-}
-```
+From here on out the combination of selected checks and radio buttons will be called *configuration* 
+(config for short).  
+If you then run the export with the default configuration, these are the kind of images you should get:
 
+<p align="center">
+  <img src="assets/plots/differentiation_true_no_filter_1.png" alt="Screenshot 1" width="30%">
+  <img src="assets/plots/differentiation_true_no_filter_2.png" alt="Screenshot 2" width="30%">
+  <img src="assets/plots/differentiation_true_no_filter_3.png" alt="Screenshot 3" width="30%">
+</p>
 
-## Run QuPath + the extension
+> **NOTE**: Nuclei *will* have different labels than their parent cell in this case.  
 
-During development, your probably want to run QuPath easily with your extension installed for debugging.
+> **Also notice** that masks are colored: this is not the default behavior, in fact, the image returned by the extension 
+> is a grayscale image where each mask is filled with a value ranging from 1 to 65,535 (the image is 16-bit grayscale).
+> Here the masks are colored for visualization purposes. So in reality, for images with a dozen of annotations
+> you should get what appears to be a black image.
 
-### 0. Make sure you have Java installed
-You'll need to install Java first.
+### No differentiation configuration
+This config is useful if you want children to be labeled as their parent cell.
 
-At the time of writing, we use a Java 25 JDK downloaded from https://adoptium.net/
+> **NOTE**: By children I mean annotations that are fully contained within another annotation. Consequently,
+> the latter is considered their parent. Some examples of children annotations might be
+> nuclei annotations, mitochondria annotations, etc.
 
-> Java 25 is a 'Long Term Support' release - which is why we use it instead of the very latest version.
+<p align="center">
+  <img src="assets/no_differentiation.png" alt="Screenshot 1" width="30%">
+  <img src="assets/plots/differentiation_false_no_filter.png" alt="Screenshot 2" width="30%">
+</p>
 
-### 1. Get QuPath's source code
-You can find instructions at https://qupath.readthedocs.io/en/stable/docs/reference/building.html
+Compare this mask to the second one from the previous section. You'll be able to appreciate
+the difference, it being that the nuclei are now labeled as their parent cell.
 
-### 2. Create an `include-extra` file
-Create a file called `include-extra` in the root directory of the QuPath source code (*not* the extension code!).
+### "Donut" configuration
+This config is useful if you want children annotations to leave a hole inside the parent.
 
-Set the contents of this file to:
-```
-[includeBuild]
-/path/to/your/extension
+<p align="center">
+  <img src="assets/donut_hole.png" alt="Screenshot 1" width="30%">
+  <img src="assets/plots/differentiation_true_filter_nucleus.png" alt="Screenshot 2" width="30%">
+</p>
 
-[dependencies]
-extension-group:extension-name
-```
-replacing the default lines where needed.
+### Empty configuration
+This config is not very useful, but hopefully it will give you an idea on how the extension works:
+if you `Filter by class` > `"Keeps only"` and leave the `Classes` field empty, no annotation will be
+exported and consequently no mask image.
 
-For example, to build the extension with the names given above you'd use
-```
-[includeBuild]
-../qupath-extension-template
+<p align="center">
+  <img src="assets/empty.png" alt="Screenshot 1" width="30%" style="vertical-align: middle;">
+  <img src="assets/plots/empty_result.png" alt="Screenshot 2" height="250" style="vertical-align: middle;">
+</p>
 
-[dependencies]
-io.github.qupath:qupath-extension-template
-```
+## Future developments
+With this being a university project, the roadmap for the future is pretty short. However, if enough people
+want to use this extension, and enough interest is shown, these will be possible future updates for
+the extension:
 
-### 3. Run QuPath
-Run QuPath from the command line using
-```
-gradlew run
-```
-If all goes well, QuPath should launch and you can check the *Extensions* mention to confirm the extension is installed.
-
-
-## Set up in an IDE (optional)
-
-During development, things are likely to be much easier if you work within an IDE.
-
-QuPath itself is developed using IntelliJ, and you can import the extension template there.
-
-The setup process is as above, and you'll need a a [Run configuration](https://www.jetbrains.com/help/idea/run-debug-configuration.html) 
-to call `gradlew run`.
-
-
-## Customize the extension
-
-Now you're ready for the creative part.
-
-You can develop the extension using either Java or Groovy - the template includes examples of both.
-
-### Create the extension Java or Groovy file(s)
-
-For the extension to work, you need to create at least one file that extends `qupath.lib.gui.extensions.QuPathExtension`.
-
-There are two examples in the template, in two languages:
-* **Java:** `qupath.ext.template.AnnotationExporterExtension.java`.
-* **Groovy:** `qupath.ext.template.DemoGroovyExtension.java`.
-
-You can pick the one that corresponds to the language you want to use, and delete the other.
-
-Then take your chosen file and rename it, edit it, move it to another package... basically, make it your own.
-
-> Please **don't neglect this step!** 
-> If you do, there's a chance of multiple extensions being created with the same class names... and causing confusion later.
-
-### Update the `META-INF/services` file
-
-For QuPath to *find* the extension later, the full class name needs to be available in `resources/META-INFO/services/qupath.lib.gui.extensions.QuPathExtensions`.
-
-So remember to edit that file to include the class name that you actually used for your extension.
-
-### Specify your license
-
-Add a license file to your GitHub repo so that others know what they can and can't do with your extension.
-
-This should be compatible with QuPath's license -- see https://github.com/qupath/qupath
-
-## Repository configuration
-
-### Easy install
-
-If you follow some conventions in naming your extension and making releases, then other QuPath users will find it easy to automatically
-install and update your extension!
-
-First, we suggest you name your extension `qupath-extension-[something]`, and keep it in its own repository (named the same as the extension),
-separate from other projects.
-
-Next, when you want to publish a new version of your extension, use the `github_release.yml` workflow included in this repository.
-
-To do so, you'd need to navigate to `Actions -> Make draft release -> Run workflow -> Run workflow` as shown in the following screenshot:
-
-![Screenshot from 2024-03-14 18-44-42](https://github.com/alanocallaghan/qupath-extension-template/assets/10779688/4712a209-eda7-4f80-8bed-bbab20e4f50a)
-
-This will automatically build the extension, and create a draft release containing the extension jar (and its associated sources and javadoc).
-You can then navigate to `Releases` and fill out information about the release --- the version, any significant changes, etc.
-Once published, users will be able to automatically install the extension as described here:
-https://qupath.readthedocs.io/en/0.5/docs/intro/extensions.html#installing-extensions
-
-### Catalogs
-
-QuPath's extension manager can easily install an extension if it is referenced in a **catalog**.
-A catalog is a JSON file hosted on a GitHub repository containing information about extensions, making it possible to easily manage them from QuPath.
-
-To create a catalog, follow the [extension catalog model documentation](https://qupath.github.io/extension-catalog-model/).
-You will need to create a JSON file containing specific information about your extension and host it on a dedicated GitHub repository.
-Once the catalog is created, any user will be able to easily install your catalog by:
-
-* Opening QuPath's extension manager by clicking on `Extensions` -> `Manage extensions` in QuPath.
-* Adding the URL to your catalog by clicking on `Manage extension catalogs` -> `Add` in the extension manager.
-* Clicking on the `+` symbol next to your extension in the extension manager.
-
-QuPath will then make it easy to manage your extension and automatically inform users when an update is available.
-
-### Replace this readme
-
-Don't forget to replace the contents of this readme with your own!
-
-
-## Getting help
-
-For questions about QuPath and/or creating new extensions, please use the forum at https://forum.image.sc/tag/qupath
-
-------
+- TSV table contents choice → Being able to choose what content to include in the TSV table.
+- Custom saving path → Being able to choose where to save the TSV table and the masks.
+- Multichannel masks → Being able to export masks with multiple channels. (Cell ch., Nuclei ch., etc.)
+- Colored mask export → Being able to export masks with colors for visualization purposes.
 
 ## License
 
-This is just a template, you're free to use it however you like.
-You can treat the contents of *this repository only* as being under [the Unlicense](https://unlicense.org) (except for the Gradle wrapper, which has its own license included).
-
-If you use it to create a new QuPath extension, I'd strongly encourage you to select a suitable open-source license for the extension.
-
-Note that *QuPath itself* is available under the GPL, so you do have to abide by those terms: see https://github.com/qupath/qupath for more.
+Licensed under [GPL-3.0](LICENSE), the same license used by QuPath and its
+official extensions. See the [LICENSE](LICENSE) file for full details.

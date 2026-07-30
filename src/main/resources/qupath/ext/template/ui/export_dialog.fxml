@@ -19,23 +19,23 @@
     </columnConstraints>
 
     <CheckBox fx:id="separateNucleiCheck"
-              text="Separa nuclei dal citoplasma"
+              text="Differentiate children"
               selected="true"
               GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2">
         <tooltip>
-            <Tooltip text="Se attivo, i nuclei avranno una label separata dalla cellula genitrice.&#10;Se disattivo, l'area del nucleo viene inclusa nell'area della cellula."/>
+            <Tooltip text="If enabled, children objects will have a different label than its parent.&#10;If disabled, the area of the children will be included in the parent's area (same label)."/>
         </tooltip>
     </CheckBox>
 
     <Separator GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
 
     <CheckBox fx:id="enableFilterCheck"
-              text="Filtra per classe"
+              text="Filter by class"
               selected="false"
               GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
 
     <RadioButton fx:id="ignoreRadio"
-                 text="Ignora le classi elencate"
+                 text="Ignore the listed classes"
                  selected="true"
                  disable="true"
                  GridPane.rowIndex="3" GridPane.columnIndex="0">
@@ -45,22 +45,22 @@
     </RadioButton>
 
     <RadioButton fx:id="includeRadio"
-                 text="Tieni solo le classi elencate"
+                 text="Keeps only the listed classes"
                  disable="true"
                  toggleGroup="$filterMode"
                  GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
     <Label fx:id="classNamesLabel"
-           text="Classi (separate da virgola):"
+           text="Classes (comma separated):"
            disable="true"
            GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
 
     <TextField fx:id="classNamesField"
-               promptText="es. fondo, artefatto, nucleo"
+               promptText="eg. nucleus, artifact, background"
                disable="true"
                GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.columnSpan="2">
         <tooltip>
-            <Tooltip text="Nomi delle classi separati da virgola (case-insensitive)"/>
+            <Tooltip text="Comma separated class names (case-insensitive)"/>
         </tooltip>
     </TextField>
 
